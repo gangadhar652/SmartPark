@@ -1,13 +1,11 @@
 package com.example.smartpark
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,11 +32,6 @@ fun HyderabadParkingDetailsScreen(
     onBackClick: () -> Unit,
     onBookNowClick: () -> Unit
 ) {
-
-    val days = remember { getNext7DaysList() }
-    var selectedDay by remember { mutableStateOf(days.first()) }
-    var selectedSlot by remember { mutableStateOf(timeSlots.first()) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -103,30 +96,6 @@ fun HyderabadParkingDetailsScreen(
                         Spacer(modifier = Modifier.width(6.dp))
                         Text("900+ reviews", fontSize = 12.sp, color = Color.Gray)
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /* ---------- DAY ---------- */
-            Text("Select Day", fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(days.size) {
-                    val day = days[it]
-                    DayCard(day, day == selectedDay) { selectedDay = day }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /* ---------- TIME ---------- */
-            Text("Select Time Slot", fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(timeSlots.size) {
-                    val slot = timeSlots[it]
-                    TimeSlotCard(slot, slot == selectedSlot) { selectedSlot = slot }
                 }
             }
 

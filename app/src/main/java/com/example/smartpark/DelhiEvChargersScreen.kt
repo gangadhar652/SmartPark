@@ -1,7 +1,6 @@
 package com.example.smartpark
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,12 +20,7 @@ import java.util.*
 
 @Composable
 fun DelhiEvChargersScreen(
-    onBack: () -> Unit,
-    onConnaughtPlaceClick: () -> Unit,
-    onCyberHubClick: () -> Unit,
-    onNehruPlaceClick: () -> Unit,
-    onIgiAirportClick: () -> Unit,
-    onSelectCitywalkClick: () -> Unit
+    onBack: () -> Unit
 ) {
 
     val currentDate = getTodayDate()
@@ -79,8 +73,7 @@ fun DelhiEvChargersScreen(
             areaType = "Commercial Business District",
             type = "Fast Charging",
             price = "₹11/kWh",
-            free = "7 free",
-            onClick = onConnaughtPlaceClick
+            free = "7 free"
         )
 
         DelhiChargerCard(
@@ -88,8 +81,7 @@ fun DelhiEvChargersScreen(
             areaType = "IT & Corporate Hub",
             type = "Fast Charging",
             price = "₹12/kWh",
-            free = "10 free",
-            onClick = onCyberHubClick
+            free = "10 free"
         )
 
         DelhiChargerCard(
@@ -97,8 +89,7 @@ fun DelhiEvChargersScreen(
             areaType = "IT & Electronics Market",
             type = "Slow Charging",
             price = "₹8/kWh",
-            free = "3 free",
-            onClick = onNehruPlaceClick
+            free = "3 free"
         )
 
         DelhiChargerCard(
@@ -106,8 +97,7 @@ fun DelhiEvChargersScreen(
             areaType = "Transit & Airport Zone",
             type = "Fast Charging",
             price = "₹13/kWh",
-            free = "5 free",
-            onClick = onIgiAirportClick
+            free = "5 free"
         )
 
         DelhiChargerCard(
@@ -115,8 +105,7 @@ fun DelhiEvChargersScreen(
             areaType = "Shopping & Commercial Area",
             type = "Slow Charging",
             price = "₹9/kWh",
-            free = "4 free",
-            onClick = onSelectCitywalkClick
+            free = "4 free"
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -138,14 +127,12 @@ fun DelhiChargerCard(
     areaType: String,
     type: String,
     price: String,
-    free: String,
-    onClick: () -> Unit
+    free: String
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
-            .clickable { onClick() },
+            .padding(vertical = 6.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(

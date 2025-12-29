@@ -23,8 +23,6 @@ object Routes {
     const val HOME = "home"
     const val EV_CHARGING = "ev_charging"
     const val PROFILE = "profile"
-    const val BOOKINGS = "bookings"
-    const val MY_VEHICLES = "my_vehicles"
 
     // Parking Cities
     const val CHENNAI_LOCATIONS = "chennai_locations"
@@ -43,9 +41,7 @@ object Routes {
 
     // EV Charging
     const val MUMBAI_EV_CHARGERS = "mumbai_ev_chargers"
-    const val MUMBAI_EV_PARKING_DETAILS = "mumbai_ev_parking_details"
     const val DELHI_EV_CHARGERS = "delhi_ev_chargers"
-    const val DELHI_EV_PARKING_DETAILS = "delhi_ev_parking_details"
     const val BANGALORE_EV_CHARGERS = "bangalore_ev_chargers"
     const val PUNE_EV_CHARGERS = "pune_ev_chargers"
 }
@@ -140,8 +136,7 @@ fun AppNavGraph() {
                 onBangaloreClick = { navController.navigate(Routes.BANGALORE_LOCATIONS) },
                 onMumbaiClick = { navController.navigate(Routes.MUMBAI_LOCATIONS) },
                 onEvClick = { navController.navigate(Routes.EV_CHARGING) },
-                onProfileClick = { navController.navigate(Routes.PROFILE) },
-                onBookingsClick = { navController.navigate(Routes.BOOKINGS) }
+                onProfileClick = { navController.navigate(Routes.PROFILE) }
             )
         }
 
@@ -315,59 +310,15 @@ fun AppNavGraph() {
         composable(Routes.MUMBAI_EV_CHARGERS) {
             MumbaiEvChargersScreen(
                 onBack = { navController.popBackStack() },
-                onBkcClick = { navController.navigate("${Routes.MUMBAI_EV_PARKING_DETAILS}/bkc") },
-                onPowaiClick = { navController.navigate("${Routes.MUMBAI_EV_PARKING_DETAILS}/powai") },
-                onAndheriClick = { navController.navigate("${Routes.MUMBAI_EV_PARKING_DETAILS}/andheri") },
-                onWorliClick = { navController.navigate("${Routes.MUMBAI_EV_PARKING_DETAILS}/worli") }
-            )
-        }
-
-        composable("${Routes.MUMBAI_EV_PARKING_DETAILS}/{areaId}") { backStackEntry ->
-            val areaId = backStackEntry.arguments?.getString("areaId")
-
-            val area = when (areaId) {
-                "bkc" -> BKC_EV
-                "powai" -> POWAI_EV
-                "andheri" -> ANDHERI_EV
-                "worli" -> WORLI_EV
-                else -> BKC_EV
-            }
-
-            MumbaiEvParkingDetailsScreen(
-                area = area,
-                onBackClick = { navController.popBackStack() },
-                onBookNowClick = {}
+                onBkcClick = {},
+                onPowaiClick = {},
+                onAndheriClick = {},
+                onWorliClick = {}
             )
         }
 
         composable(Routes.DELHI_EV_CHARGERS) {
-            DelhiEvChargersScreen(
-                onBack = { navController.popBackStack() },
-                onConnaughtPlaceClick = { navController.navigate("${Routes.DELHI_EV_PARKING_DETAILS}/connaught_place") },
-                onCyberHubClick = { navController.navigate("${Routes.DELHI_EV_PARKING_DETAILS}/cyber_hub") },
-                onNehruPlaceClick = { navController.navigate("${Routes.DELHI_EV_PARKING_DETAILS}/nehru_place") },
-                onIgiAirportClick = { navController.navigate("${Routes.DELHI_EV_PARKING_DETAILS}/igi_airport") },
-                onSelectCitywalkClick = { navController.navigate("${Routes.DELHI_EV_PARKING_DETAILS}/select_citywalk") }
-            )
-        }
-
-        composable("${Routes.DELHI_EV_PARKING_DETAILS}/{areaId}") { backStackEntry ->
-            val areaId = backStackEntry.arguments?.getString("areaId")
-
-            val area = when (areaId) {
-                "connaught_place" -> CONNAUGHT_PLACE_EV
-                "cyber_hub" -> CYBER_HUB_EV
-                "nehru_place" -> NEHRU_PLACE_EV
-                "igi_airport" -> IGI_AIRPORT_EV
-                "select_citywalk" -> SELECT_CITYWALK_EV
-                else -> CONNAUGHT_PLACE_EV
-            }
-
-            DelhiEvParkingDetailsScreen(
-                area = area,
-                onBackClick = { navController.popBackStack() },
-                onBookNowClick = {}
-            )
+            DelhiEvChargersScreen { navController.popBackStack() }
         }
 
         composable(Routes.BANGALORE_EV_CHARGERS) {
@@ -387,20 +338,7 @@ fun AppNavGraph() {
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(Routes.HOME) { inclusive = true }
                     }
-                },
-                onMyVehiclesClick = { navController.navigate(Routes.MY_VEHICLES) }
-            )
-        }
-
-        /* ---------------- BOOKINGS ---------------- */
-        composable(Routes.BOOKINGS) {
-            MyBookingsScreen()
-        }
-
-        /* ---------------- MY VEHICLES ---------------- */
-        composable(Routes.MY_VEHICLES) {
-            MyVehiclesScreen(
-                onBackClick = { navController.popBackStack() }
+                }
             )
         }
     }

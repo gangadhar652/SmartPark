@@ -20,8 +20,7 @@ import androidx.compose.ui.unit.sp
 fun ProfileScreen(
     onHomeClick: () -> Unit,
     onEvClick: () -> Unit,
-    onLogoutClick: () -> Unit,
-    onMyVehiclesClick: () -> Unit
+    onLogoutClick: () -> Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -101,13 +100,9 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             /* 🔹 MENU */
-            ProfileMenuItem(
-                icon = Icons.Default.DirectionsCar,
-                title = "My Vehicles",
-                badge = "2",
-                onClick = onMyVehiclesClick
-            )
+            ProfileMenuItem(Icons.Default.DirectionsCar, "My Vehicles", "2")
             ProfileMenuItem(Icons.Default.AccountBalanceWallet, "Wallet & Payments", "₹250")
+            ProfileMenuItem(Icons.Default.Star, "Membership Plans")
             ProfileMenuItem(Icons.Default.Notifications, "Notifications")
             ProfileMenuItem(Icons.Default.Lock, "Privacy & Security")
             ProfileMenuItem(Icons.Default.HelpOutline, "Help & Support")
@@ -143,14 +138,13 @@ fun ProfileStat(value: String, label: String) {
 fun ProfileMenuItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
-    badge: String? = null,
-    onClick: () -> Unit = {}
+    badge: String? = null
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { onClick() },
+            .clickable { },
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
