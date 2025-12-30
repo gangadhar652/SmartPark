@@ -19,10 +19,13 @@ object Routes {
     const val PERMISSIONS = "permissions"
     const val LOGIN = "login"
     const val SIGNUP = "signup"
+    const val FORGOT_PASSWORD = "forgot_password"
+    const val VERIFY_OTP = "verify_otp"
 
     const val HOME = "home"
     const val EV_CHARGING = "ev_charging"
     const val PROFILE = "profile"
+    const val MY_BOOKINGS = "my_bookings"
 
     // Parking Cities
     const val CHENNAI_LOCATIONS = "chennai_locations"
@@ -37,13 +40,16 @@ object Routes {
     const val MUMBAI_PARKING_DETAILS = "mumbai_parking_details"
 
     // Booking Confirmation
-    const val CHENNAI_BOOKING_CONFIRMATION = "chennai_booking_confirmation"
+    const val BOOKING_CONFIRMATION = "booking_confirmation"
 
     // EV Charging
     const val MUMBAI_EV_CHARGERS = "mumbai_ev_chargers"
     const val DELHI_EV_CHARGERS = "delhi_ev_chargers"
     const val BANGALORE_EV_CHARGERS = "bangalore_ev_chargers"
     const val PUNE_EV_CHARGERS = "pune_ev_chargers"
+    
+    const val MUMBAI_EV_DETAILS = "mumbai_ev_details"
+    const val DELHI_EV_DETAILS = "delhi_ev_details"
 }
 
 /* ---------------- NAV GRAPH ---------------- */
@@ -57,6 +63,9 @@ fun AppNavGraph() {
     var selectedHyderabadArea by remember { mutableStateOf<HyderabadParkingArea?>(null) }
     var selectedBangaloreArea by remember { mutableStateOf<BangaloreParkingArea?>(null) }
     var selectedMumbaiArea by remember { mutableStateOf<MumbaiParkingArea?>(null) }
+    
+    var selectedMumbaiEvArea by remember { mutableStateOf<MumbaiEvParkingArea?>(null) }
+    var selectedDelhiEvArea by remember { mutableStateOf<DelhiEvParkingArea?>(null) }
 
     NavHost(
         navController = navController,
@@ -109,9 +118,30 @@ fun AppNavGraph() {
                         popUpTo(Routes.LOGIN) { inclusive = true }
                     }
                 },
-                onForgotPasswordClick = {},
-                onGoogleLoginClick = {},
+                onForgotPasswordClick = { navController.navigate(Routes.FORGOT_PASSWORD) },
                 onSignUpClick = { navController.navigate(Routes.SIGNUP) }
+            )
+        }
+
+        /* ---------------- FORGOT PASSWORD ---------------- */
+        composable(Routes.FORGOT_PASSWORD) {
+            ForgotPasswordScreen(
+                onBackClick = { navController.popBackStack() },
+                onContinueClick = { _ ->
+                    navController.navigate(Routes.VERIFY_OTP)
+                }
+            )
+        }
+
+        /* ---------------- VERIFY OTP ---------------- */
+        composable(Routes.VERIFY_OTP) {
+            VerifyOtpScreen(
+                onBackClick = { navController.popBackStack() },
+                onVerifyClick = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -136,7 +166,8 @@ fun AppNavGraph() {
                 onBangaloreClick = { navController.navigate(Routes.BANGALORE_LOCATIONS) },
                 onMumbaiClick = { navController.navigate(Routes.MUMBAI_LOCATIONS) },
                 onEvClick = { navController.navigate(Routes.EV_CHARGING) },
-                onProfileClick = { navController.navigate(Routes.PROFILE) }
+                onProfileClick = { navController.navigate(Routes.PROFILE) },
+                onBookingsClick = { navController.navigate(Routes.MY_BOOKINGS) }
             )
         }
 
@@ -168,17 +199,22 @@ fun AppNavGraph() {
                 area = area,
                 onBackClick = { navController.popBackStack() },
                 onBookNowClick = {
-                    navController.navigate(Routes.CHENNAI_BOOKING_CONFIRMATION)
+                    navController.navigate(Routes.BOOKING_CONFIRMATION)
                 }
             )
         }
 
-        /* ---------------- CHENNAI BOOKING CONFIRMATION ---------------- */
-        composable(Routes.CHENNAI_BOOKING_CONFIRMATION) {
-            ChennaiBookingConfirmationScreen(
+        /* ---------------- BOOKING CONFIRMATION ---------------- */
+        composable(Routes.BOOKING_CONFIRMATION) {
+            HyderabadBookingConfirmationScreen(
                 onBackHomeClick = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }
+                    }
+                },
+                onViewBookingsClick = {
+                    navController.navigate(Routes.MY_BOOKINGS) {
+                        popUpTo(Routes.HOME)
                     }
                 }
             )
@@ -216,7 +252,9 @@ fun AppNavGraph() {
                 HyderabadParkingDetailsScreen(
                     area = it,
                     onBackClick = { navController.popBackStack() },
-                    onBookNowClick = {}
+                    onBookNowClick = {
+                        navController.navigate(Routes.BOOKING_CONFIRMATION)
+                    }
                 )
             }
         }
@@ -253,7 +291,9 @@ fun AppNavGraph() {
                 BangaloreParkingDetailsScreen(
                     area = it,
                     onBackClick = { navController.popBackStack() },
-                    onBookNowClick = {}
+                    onBookNowClick = {
+                        navController.navigate(Routes.BOOKING_CONFIRMATION)
+                    }
                 )
             }
         }
@@ -290,7 +330,9 @@ fun AppNavGraph() {
                 MumbaiParkingDetailsScreen(
                     area = it,
                     onBackClick = { navController.popBackStack() },
-                    onBookNowClick = {}
+                    onBookNowClick = {
+                        navController.navigate(Routes.BOOKING_CONFIRMATION)
+                    }
                 )
             }
         }
@@ -303,22 +345,83 @@ fun AppNavGraph() {
                 onMumbaiEvClick = { navController.navigate(Routes.MUMBAI_EV_CHARGERS) },
                 onDelhiEvClick = { navController.navigate(Routes.DELHI_EV_CHARGERS) },
                 onBangaloreEvClick = { navController.navigate(Routes.BANGALORE_EV_CHARGERS) },
-                onPuneEvClick = { navController.navigate(Routes.PUNE_EV_CHARGERS) }
+                onPuneEvClick = { navController.navigate(Routes.PUNE_EV_CHARGERS) },
+                onBookingsClick = { navController.navigate(Routes.MY_BOOKINGS) }
             )
         }
 
+        /* ---------------- MUMBAI EV CHARGERS ---------------- */
         composable(Routes.MUMBAI_EV_CHARGERS) {
             MumbaiEvChargersScreen(
                 onBack = { navController.popBackStack() },
-                onBkcClick = {},
-                onPowaiClick = {},
-                onAndheriClick = {},
-                onWorliClick = {}
+                onBkcClick = {
+                    selectedMumbaiEvArea = BKC_EV
+                    navController.navigate(Routes.MUMBAI_EV_DETAILS)
+                },
+                onPowaiClick = {
+                    selectedMumbaiEvArea = POWAI_EV
+                    navController.navigate(Routes.MUMBAI_EV_DETAILS)
+                },
+                onAndheriClick = {
+                    selectedMumbaiEvArea = ANDHERI_EV
+                    navController.navigate(Routes.MUMBAI_EV_DETAILS)
+                },
+                onWorliClick = {
+                    selectedMumbaiEvArea = WORLI_EV
+                    navController.navigate(Routes.MUMBAI_EV_DETAILS)
+                }
             )
         }
 
+        composable(Routes.MUMBAI_EV_DETAILS) {
+            selectedMumbaiEvArea?.let {
+                MumbaiEvParkingDetailsScreen(
+                    area = it,
+                    onBackClick = { navController.popBackStack() },
+                    onBookNowClick = {
+                        navController.navigate(Routes.BOOKING_CONFIRMATION)
+                    }
+                )
+            }
+        }
+
+        /* ---------------- DELHI EV CHARGERS ---------------- */
         composable(Routes.DELHI_EV_CHARGERS) {
-            DelhiEvChargersScreen { navController.popBackStack() }
+            DelhiEvChargersScreen(
+                onBack = { navController.popBackStack() },
+                onCpClick = {
+                    selectedDelhiEvArea = CONNAUGHT_PLACE_EV
+                    navController.navigate(Routes.DELHI_EV_DETAILS)
+                },
+                onGurugramClick = {
+                    selectedDelhiEvArea = CYBER_HUB_EV
+                    navController.navigate(Routes.DELHI_EV_DETAILS)
+                },
+                onNehruPlaceClick = {
+                    selectedDelhiEvArea = NEHRU_PLACE_EV
+                    navController.navigate(Routes.DELHI_EV_DETAILS)
+                },
+                onAerocityClick = {
+                    selectedDelhiEvArea = AEROCITY_EV
+                    navController.navigate(Routes.DELHI_EV_DETAILS)
+                },
+                onSaketClick = {
+                    selectedDelhiEvArea = SAKET_EV
+                    navController.navigate(Routes.DELHI_EV_DETAILS)
+                }
+            )
+        }
+
+        composable(Routes.DELHI_EV_DETAILS) {
+            selectedDelhiEvArea?.let {
+                DelhiEvParkingDetailsScreen(
+                    area = it,
+                    onBackClick = { navController.popBackStack() },
+                    onBookNowClick = {
+                        navController.navigate(Routes.BOOKING_CONFIRMATION)
+                    }
+                )
+            }
         }
 
         composable(Routes.BANGALORE_EV_CHARGERS) {
@@ -334,11 +437,22 @@ fun AppNavGraph() {
             ProfileScreen(
                 onHomeClick = { navController.navigate(Routes.HOME) },
                 onEvClick = { navController.navigate(Routes.EV_CHARGING) },
+                onBookingsClick = { navController.navigate(Routes.MY_BOOKINGS) },
                 onLogoutClick = {
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(Routes.HOME) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        /* ---------------- MY BOOKINGS ---------------- */
+        composable(Routes.MY_BOOKINGS) {
+            MyBookingsScreen(
+                onBackClick = { navController.popBackStack() },
+                onHomeClick = { navController.navigate(Routes.HOME) },
+                onEvClick = { navController.navigate(Routes.EV_CHARGING) },
+                onProfileClick = { navController.navigate(Routes.PROFILE) }
             )
         }
     }

@@ -18,28 +18,28 @@ import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
 import java.util.*
 
-/* ---------- DATA MODELS ---------- */
+/* ---------- DATA MODEL ---------- */
 
-data class MumbaiParkingArea(
+data class DelhiEvParkingArea(
     val name: String,
-    val slots: String,
-    val evSlots: String,
+    val power: String,
+    val connector: String,
     val price: String
 )
 
-data class MumbaiDayItem(val day: String, val date: String)
-data class MumbaiTimeSlot(val title: String, val time: String)
+data class DelhiEvDayItem(val day: String, val date: String)
+data class DelhiEvTimeSlot(val title: String, val time: String)
 
 /* ---------- DATE HELPER ---------- */
 
-fun getMumbaiNext7DaysList(): List<MumbaiDayItem> {
-    val list = mutableListOf<MumbaiDayItem>()
+fun getDelhiEvNext7DaysList(): List<DelhiEvDayItem> {
+    val list = mutableListOf<DelhiEvDayItem>()
     val cal = Calendar.getInstance()
     val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
     val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
 
     repeat(7) {
-        list.add(MumbaiDayItem(dayFormat.format(cal.time), dateFormat.format(cal.time)))
+        list.add(DelhiEvDayItem(dayFormat.format(cal.time), dateFormat.format(cal.time)))
         cal.add(Calendar.DAY_OF_YEAR, 1)
     }
     return list
@@ -47,30 +47,29 @@ fun getMumbaiNext7DaysList(): List<MumbaiDayItem> {
 
 /* ---------- TIME SLOTS ---------- */
 
-val mumbaiTimeSlots = listOf(
-    MumbaiTimeSlot("Morning", "6 AM - 12 PM (6 hrs)"),
-    MumbaiTimeSlot("Afternoon", "12 PM - 6 PM (6 hrs)"),
-    MumbaiTimeSlot("Night", "6 PM - 12 AM (6 hrs)")
+val delhiEvTimeSlots = listOf(
+    DelhiEvTimeSlot("Morning", "6 AM - 12 PM (6 hrs)"),
+    DelhiEvTimeSlot("Afternoon", "12 PM - 6 PM (6 hrs)"),
+    DelhiEvTimeSlot("Night", "6 PM - 12 AM (6 hrs)")
 )
 
 /* ---------- MAIN SCREEN ---------- */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MumbaiParkingDetailsScreen(
-    area: MumbaiParkingArea,
+fun DelhiEvParkingDetailsScreen(
+    area: DelhiEvParkingArea,
     onBackClick: () -> Unit,
     onBookNowClick: () -> Unit
 ) {
-
-    val days = remember { getMumbaiNext7DaysList() }
+    val days = remember { getDelhiEvNext7DaysList() }
     var selectedDay by remember { mutableStateOf(days.first()) }
-    var selectedSlot by remember { mutableStateOf(mumbaiTimeSlots.first()) }
+    var selectedSlot by remember { mutableStateOf(delhiEvTimeSlots.first()) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mumbai Parking Details") },
+                title = { Text("Delhi EV Parking Details") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -79,7 +78,7 @@ fun MumbaiParkingDetailsScreen(
             )
         },
         bottomBar = {
-            MumbaiParkingBottomBar(onBookNowClick)
+            DelhiEvParkingBottomBar(onBookNowClick)
         }
     ) { padding ->
 
@@ -103,18 +102,18 @@ fun MumbaiParkingDetailsScreen(
 
                         Column {
                             Text(
-                                text = "${area.name} Parking",
+                                text = "${area.name} EV Parking",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "${area.name}, Mumbai",
+                                text = "${area.name}, Delhi",
                                 fontSize = 12.sp,
                                 color = Color.Gray
                             )
                         }
 
-                        MumbaiParkingStatusChip("Available")
+                        DelhiEvStatusChip("Available")
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -127,9 +126,9 @@ fun MumbaiParkingDetailsScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("4.5", fontWeight = FontWeight.Bold)
+                        Text("4.7", fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("1k+ reviews", fontSize = 12.sp, color = Color.Gray)
+                        Text("1.2k+ reviews", fontSize = 12.sp, color = Color.Gray)
                     }
                 }
             }
@@ -142,7 +141,7 @@ fun MumbaiParkingDetailsScreen(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(days.size) {
                     val day = days[it]
-                    MumbaiDayCard(day, day == selectedDay) { selectedDay = day }
+                    DelhiEvDayCard(day, day == selectedDay) { selectedDay = day }
                 }
             }
 
@@ -152,9 +151,9 @@ fun MumbaiParkingDetailsScreen(
             Text("Select Time Slot", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(mumbaiTimeSlots.size) {
-                    val slot = mumbaiTimeSlots[it]
-                    MumbaiTimeSlotCard(slot, slot == selectedSlot) { selectedSlot = slot }
+                items(delhiEvTimeSlots.size) {
+                    val slot = delhiEvTimeSlots[it]
+                    DelhiEvTimeSlotCard(slot, slot == selectedSlot) { selectedSlot = slot }
                 }
             }
 
@@ -162,17 +161,17 @@ fun MumbaiParkingDetailsScreen(
 
             /* ---------- INFO ROW 1 ---------- */
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                MumbaiInfoCard(
+                DelhiEvInfoCard(
                     modifier = Modifier.weight(1f),
-                    icon = Icons.Default.LocalParking,
-                    title = "Slots",
-                    value = area.slots
+                    icon = Icons.Default.Bolt,
+                    title = "Power",
+                    value = area.power
                 )
-                MumbaiInfoCard(
+                DelhiEvInfoCard(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.ElectricCar,
-                    title = "EV Charging",
-                    value = area.evSlots
+                    title = "Connector",
+                    value = area.connector
                 )
             }
 
@@ -180,13 +179,13 @@ fun MumbaiParkingDetailsScreen(
 
             /* ---------- INFO ROW 2 ---------- */
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                MumbaiInfoCard(
+                DelhiEvInfoCard(
                     modifier = Modifier.weight(1f),
-                    icon = Icons.Default.Schedule,
-                    title = "Price / Hour",
+                    icon = Icons.Default.CurrencyRupee,
+                    title = "Price / kWh",
                     value = area.price
                 )
-                MumbaiInfoCard(
+                DelhiEvInfoCard(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.Security,
                     title = "Security",
@@ -200,7 +199,7 @@ fun MumbaiParkingDetailsScreen(
 /* ---------- DAY CARD ---------- */
 
 @Composable
-fun MumbaiDayCard(day: MumbaiDayItem, selected: Boolean, onClick: () -> Unit) {
+fun DelhiEvDayCard(day: DelhiEvDayItem, selected: Boolean, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(72.dp)
@@ -231,7 +230,7 @@ fun MumbaiDayCard(day: MumbaiDayItem, selected: Boolean, onClick: () -> Unit) {
 /* ---------- TIME SLOT CARD ---------- */
 
 @Composable
-fun MumbaiTimeSlotCard(slot: MumbaiTimeSlot, selected: Boolean, onClick: () -> Unit) {
+fun DelhiEvTimeSlotCard(slot: DelhiEvTimeSlot, selected: Boolean, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(150.dp)
@@ -259,7 +258,7 @@ fun MumbaiTimeSlotCard(slot: MumbaiTimeSlot, selected: Boolean, onClick: () -> U
 /* ---------- INFO CARD ---------- */
 
 @Composable
-fun MumbaiInfoCard(
+fun DelhiEvInfoCard(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     title: String,
@@ -270,7 +269,7 @@ fun MumbaiInfoCard(
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+            Icon(icon, contentDescription = null, tint = Color(0xFF2E7D32))
             Spacer(modifier = Modifier.height(6.dp))
             Text(title, fontSize = 12.sp, color = Color.Gray)
             Text(value, fontWeight = FontWeight.Bold)
@@ -278,10 +277,27 @@ fun MumbaiInfoCard(
     }
 }
 
+/* ---------- CHIP ---------- */
+
+@Composable
+fun DelhiEvChip(text: String) {
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = Color(0xFFE3F2FD)
+    ) {
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            color = Color(0xFF1976D2),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+        )
+    }
+}
+
 /* ---------- STATUS CHIP ---------- */
 
 @Composable
-fun MumbaiParkingStatusChip(text: String) {
+fun DelhiEvStatusChip(text: String) {
     Surface(
         color = Color(0xFFDFF5EA),
         shape = RoundedCornerShape(50)
@@ -298,7 +314,7 @@ fun MumbaiParkingStatusChip(text: String) {
 /* ---------- BOTTOM BAR ---------- */
 
 @Composable
-fun MumbaiParkingBottomBar(onBookNowClick: () -> Unit) {
+fun DelhiEvParkingBottomBar(onBookNowClick: () -> Unit) {
     Button(
         onClick = onBookNowClick,
         modifier = Modifier
@@ -309,10 +325,39 @@ fun MumbaiParkingBottomBar(onBookNowClick: () -> Unit) {
     }
 }
 
-/* ---------- MUMBAI PARKING DATA ---------- */
+/* ---------- DELHI EV PARKING DATA ---------- */
 
-val BANDRA = MumbaiParkingArea("Bandra", "90 / 200", "20 Available", "₹80")
-val ANDHERI = MumbaiParkingArea("Andheri", "75 / 180", "15 Available", "₹75")
-val POWAI = MumbaiParkingArea("Powai", "60 / 150", "12 Available", "₹70")
-val WORLI = MumbaiParkingArea("Worli", "55 / 140", "10 Available", "₹85")
-val COLABA = MumbaiParkingArea("Colaba", "45 / 120", "8 Available", "₹90")
+val CONNAUGHT_PLACE_EV = DelhiEvParkingArea(
+    name = "Connaught Place",
+    power = "120 kW",
+    connector = "CCS / CHAdeMO",
+    price = "₹11"
+)
+
+val CYBER_HUB_EV = DelhiEvParkingArea(
+    name = "Cyber Hub Gurugram",
+    power = "100 kW",
+    connector = "CCS",
+    price = "₹12"
+)
+
+val NEHRU_PLACE_EV = DelhiEvParkingArea(
+    name = "Nehru Place",
+    power = "60 kW",
+    connector = "Type 2",
+    price = "₹8"
+)
+
+val AEROCITY_EV = DelhiEvParkingArea(
+    name = "IGI Airport Aerocity",
+    power = "140 kW",
+    connector = "CCS / CHAdeMO",
+    price = "₹13"
+)
+
+val SAKET_EV = DelhiEvParkingArea(
+    name = "Select Citywalk Saket",
+    power = "60 kW",
+    connector = "Type 2",
+    price = "₹9"
+)

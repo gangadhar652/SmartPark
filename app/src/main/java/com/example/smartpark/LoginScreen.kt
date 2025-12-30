@@ -17,10 +17,9 @@ import androidx.compose.ui.unit.sp
 fun LoginScreen(
     onLoginClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onGoogleLoginClick: () -> Unit,
     onSignUpClick: () -> Unit
 ) {
-    var emailOrPhone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
@@ -50,9 +49,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         OutlinedTextField(
-            value = emailOrPhone,
-            onValueChange = { emailOrPhone = it },
-            placeholder = { Text("Email or Phone") },
+            value = email,
+            onValueChange = { email = it },
+            placeholder = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp)
@@ -96,27 +95,6 @@ fun LoginScreen(
             )
         ) {
             Text("Login", color = Color.White, fontSize = 16.sp)
-        }
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        Text(
-            text = "Or continue with",
-            fontSize = 13.sp,
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedButton(
-            onClick = onGoogleLoginClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(14.dp)
-        ) {
-            Text("Login with Google", color = Color.Black)
         }
 
         // 🔽 Push Sign-Up to Bottom

@@ -27,7 +27,8 @@ fun FindEvChargingScreen(
     onMumbaiEvClick: () -> Unit,
     onDelhiEvClick: () -> Unit,
     onBangaloreEvClick: () -> Unit,
-    onPuneEvClick: () -> Unit          // ✅ ADDED
+    onPuneEvClick: () -> Unit,
+    onBookingsClick: () -> Unit
 ) {
 
     val timeSession = getTimeSession()
@@ -36,7 +37,8 @@ fun FindEvChargingScreen(
         bottomBar = {
             EvBottomNavBar(
                 onHomeClick = onHomeClick,
-                onProfileClick = onProfileClick
+                onProfileClick = onProfileClick,
+                onBookingsClick = onBookingsClick
             )
         }
     ) { padding ->
@@ -82,7 +84,7 @@ fun FindEvChargingScreen(
                 onMumbaiClick = onMumbaiEvClick,
                 onDelhiClick = onDelhiEvClick,
                 onBangaloreClick = onBangaloreEvClick,
-                onPuneClick = onPuneEvClick          // ✅ PASS
+                onPuneClick = onPuneEvClick
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -111,7 +113,7 @@ fun EvCityGrid(
     onMumbaiClick: () -> Unit,
     onDelhiClick: () -> Unit,
     onBangaloreClick: () -> Unit,
-    onPuneClick: () -> Unit           // ✅ ADDED
+    onPuneClick: () -> Unit
 ) {
     val cities = listOf(
         Triple("Mumbai", "67 stations", Color(0xFF4DB6AC)),
@@ -136,7 +138,7 @@ fun EvCityGrid(
                     "Mumbai" -> onMumbaiClick()
                     "Delhi" -> onDelhiClick()
                     "Bangalore" -> onBangaloreClick()
-                    "Pune" -> onPuneClick()          // ✅ ADDED
+                    "Pune" -> onPuneClick()
                 }
             }
         }
@@ -226,7 +228,8 @@ fun ChargingTipsCard() {
 @Composable
 fun EvBottomNavBar(
     onHomeClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onBookingsClick: () -> Unit
 ) {
     NavigationBar {
 
@@ -239,7 +242,7 @@ fun EvBottomNavBar(
 
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = onBookingsClick,
             icon = { Icon(Icons.Default.Event, null) },
             label = { Text("Bookings") }
         )

@@ -1,5 +1,6 @@
 package com.example.smartpark
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,67 +18,71 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ChennaiBookingConfirmationScreen(
+fun HyderabadBookingConfirmationScreen(
     onBackHomeClick: () -> Unit,
     onViewBookingsClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         /* ---------- SUCCESS ICON ---------- */
         Box(
             modifier = Modifier
-                .size(90.dp)
-                .background(Color(0xFFDFF5EA), CircleShape),
+                .size(100.dp)
+                .background(Color(0xFFE8F5E9), CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 Icons.Default.Check,
                 contentDescription = null,
                 tint = Color(0xFF2E7D32),
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier.size(48.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = "Booking Confirmed!",
-            fontSize = 20.sp,
+            fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = "Your parking slot is reserved",
-            fontSize = 13.sp,
+            fontSize = 14.sp,
             color = Color.Gray
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         /* ---------- QR PLACEHOLDER ---------- */
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFF4F7FB))
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FB))
         ) {
             Column(
-                modifier = Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
 
                 Box(
                     modifier = Modifier
-                        .size(140.dp)
-                        .background(Color(0xFFE9EEF5), RoundedCornerShape(12.dp)),
+                        .size(120.dp)
+                        .background(Color(0xFFEDF1F5), RoundedCornerShape(16.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -88,7 +93,7 @@ fun ChennaiBookingConfirmationScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = "Scan this QR code at the parking entrance",
@@ -98,27 +103,28 @@ fun ChennaiBookingConfirmationScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         /* ---------- BOOKING DETAILS ---------- */
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F5))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
 
-                BookingDetailRow(
+                HyderabadBookingDetailRow(
                     icon = Icons.Default.Schedule,
                     title = "Duration",
                     value = "6 hours"
                 )
 
-                Divider(modifier = Modifier.padding(vertical = 10.dp))
+                Divider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray)
 
-                BookingDetailRow(
+                HyderabadBookingDetailRow(
                     icon = Icons.Default.DirectionsCar,
                     title = "Vehicle",
-                    value = "TN 01 AB 1234"
+                    value = "TS 09 AB 1234"
                 )
             }
         }
@@ -128,30 +134,34 @@ fun ChennaiBookingConfirmationScreen(
         /* ---------- ACTIONS ---------- */
         Button(
             onClick = onViewBookingsClick,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(54.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6750A4)) 
         ) {
-            Text("View My Bookings")
+            Text("View My Bookings", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedButton(
             onClick = onBackHomeClick,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(54.dp),
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, Color.Gray)
         ) {
-            Text("Back to Home")
+            Text("Back to Home", fontSize = 16.sp, color = Color.Black)
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
-/* ---------- DETAIL ROW ---------- */
-
 @Composable
-fun BookingDetailRow(
+fun HyderabadBookingDetailRow(
     icon: ImageVector,
     title: String,
     value: String
@@ -160,7 +170,7 @@ fun BookingDetailRow(
 
         Box(
             modifier = Modifier
-                .size(36.dp)
+                .size(40.dp)
                 .background(Color(0xFFE3F2FD), CircleShape),
             contentAlignment = Alignment.Center
         ) {
@@ -168,15 +178,15 @@ fun BookingDetailRow(
                 icon,
                 contentDescription = null,
                 tint = Color(0xFF1976D2),
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Column {
             Text(title, fontSize = 12.sp, color = Color.Gray)
-            Text(value, fontWeight = FontWeight.Bold)
+            Text(value, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

@@ -28,7 +28,8 @@ fun FindParkingScreen(
     onBangaloreClick: () -> Unit,
     onMumbaiClick: () -> Unit,
     onEvClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onBookingsClick: () -> Unit
 ) {
 
     var selectedTab by remember { mutableStateOf("Parking") }
@@ -39,7 +40,8 @@ fun FindParkingScreen(
                 selected = "Home",
                 onHomeClick = onHomeClick,
                 onEvClick = onEvClick,
-                onProfileClick = onProfileClick
+                onProfileClick = onProfileClick,
+                onBookingsClick = onBookingsClick
             )
         }
     ) { padding ->
@@ -268,7 +270,8 @@ fun BottomNavBar(
     selected: String,
     onHomeClick: () -> Unit,
     onEvClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onBookingsClick: () -> Unit
 ) {
     NavigationBar {
 
@@ -281,7 +284,7 @@ fun BottomNavBar(
 
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = onBookingsClick,
             icon = { Icon(Icons.Default.Event, null) },
             label = { Text("Bookings") }
         )

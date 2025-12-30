@@ -18,88 +18,111 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MyBookingsScreen() {
-
+fun MyBookingsScreen(
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onEvClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("All", "Parking", "EV Charging")
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF6FAFF))
-            .padding(16.dp)
-    ) {
-
-        /* HEADER */
-        Text(
-            text = "My Bookings",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "View your booking history",
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        /* TABS */
-        Row {
-            tabs.forEachIndexed { index, title ->
-                FilterTab(
-                    title = title,
-                    selected = selectedTab == index,
-                    onClick = { selectedTab = index }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+    Scaffold(
+        bottomBar = {
+            MyBookingsBottomNavBar(
+                onHomeClick = onHomeClick,
+                onEvClick = onEvClick,
+                onProfileClick = onProfileClick
+            )
         }
+    ) { padding ->
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        /* BOOKINGS LIST */
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF6FAFF))
+                .padding(padding)
+                .padding(16.dp)
         ) {
 
-            item {
-                BookingCard(
-                    title = "City Mall Parking",
-                    location = "MG Road, Bangalore",
-                    date = "Today",
-                    duration = "2 hours",
-                    slot = "Slot A3",
-                    price = "₹104",
-                    status = "Active",
-                    isEv = false
-                )
+            /* HEADER */
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBackClick) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Column {
+                    Text(
+                        text = "My Bookings",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "View your booking history",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
             }
 
-            item {
-                BookingCard(
-                    title = "Tech Park Charging Hub",
-                    location = "Whitefield, Bangalore",
-                    date = "Yesterday",
-                    duration = "1 hour",
-                    slot = "Type 2 Connector",
-                    price = "₹586",
-                    status = "Completed",
-                    isEv = true
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            /* TABS */
+            Row {
+                tabs.forEachIndexed { index, title ->
+                    FilterTab(
+                        title = title,
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index }
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
             }
 
-            item {
-                BookingCard(
-                    title = "Kempegowda Airport",
-                    location = "Bangalore",
-                    date = "Dec 18, 2024",
-                    duration = "4 hours",
-                    slot = "Slot B12",
-                    price = "₹320",
-                    status = "Completed",
-                    isEv = false
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            /* BOOKINGS LIST */
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                item {
+                    BookingCard(
+                        title = "City Mall Parking",
+                        location = "MG Road, Bangalore",
+                        date = "Today",
+                        duration = "2 hours",
+                        slot = "Slot A3",
+                        price = "₹104",
+                        status = "Active",
+                        isEv = false
+                    )
+                }
+
+                item {
+                    BookingCard(
+                        title = "Tech Park Charging Hub",
+                        location = "Whitefield, Bangalore",
+                        date = "Yesterday",
+                        duration = "1 hour",
+                        slot = "Type 2 Connector",
+                        price = "₹586",
+                        status = "Completed",
+                        isEv = true
+                    )
+                }
+
+                item {
+                    BookingCard(
+                        title = "Kempegowda Airport",
+                        location = "Bangalore",
+                        date = "Dec 18, 2024",
+                        duration = "4 hours",
+                        slot = "Slot B12",
+                        price = "₹320",
+                        status = "Completed",
+                        isEv = false
+                    )
+                }
             }
         }
     }
@@ -230,5 +253,52 @@ fun BookingInfo(
         Icon(icon, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
         Spacer(modifier = Modifier.width(4.dp))
         Text(text, fontSize = 12.sp, color = Color.Gray)
+    }
+}
+
+/* ---------- BOTTOM NAV ---------- */
+
+@Composable
+fun MyBookingsBottomNavBar(
+    onHomeClick: () -> Unit,
+    onEvClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
+    NavigationBar {
+
+        NavigationBarItem(
+            selected = false,
+            onClick = onHomeClick,
+            icon = { Icon(Icons.Default.Home, null) },
+            label = { Text("Home") }
+        )
+
+        NavigationBarItem(
+            selected = true,
+            onClick = {},
+            icon = { Icon(Icons.Default.Event, null) },
+            label = { Text("Bookings") }
+        )
+
+        NavigationBarItem(
+            selected = false,
+            onClick = onEvClick,
+            icon = { Icon(Icons.Default.ElectricCar, null) },
+            label = { Text("EV") }
+        )
+
+        NavigationBarItem(
+            selected = false,
+            onClick = {},
+            icon = { Icon(Icons.Default.AccountBalanceWallet, null) },
+            label = { Text("Wallet") }
+        )
+
+        NavigationBarItem(
+            selected = false,
+            onClick = onProfileClick,
+            icon = { Icon(Icons.Default.Person, null) },
+            label = { Text("Profile") }
+        )
     }
 }

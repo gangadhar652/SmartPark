@@ -1,11 +1,13 @@
 package com.example.smartpark
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,14 +15,42 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.*
 
-/* ---------- DATA MODEL ---------- */
+/* ---------- DATA MODELS ---------- */
 
 data class BangaloreParkingArea(
     val name: String,
     val slots: String,
     val evSlots: String,
     val price: String
+)
+
+data class BangaloreDayItem(val day: String, val date: String)
+data class BangaloreTimeSlot(val title: String, val time: String)
+
+/* ---------- DATE HELPER ---------- */
+
+fun getBangaloreNext7DaysList(): List<BangaloreDayItem> {
+    val list = mutableListOf<BangaloreDayItem>()
+    val cal = Calendar.getInstance()
+    val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+
+    repeat(7) {
+        list.add(BangaloreDayItem(dayFormat.format(cal.time), dateFormat.format(cal.time)))
+        cal.add(Calendar.DAY_OF_YEAR, 1)
+    }
+    return list
+}
+
+/* ---------- TIME SLOTS ---------- */
+
+val bangaloreTimeSlots = listOf(
+    BangaloreTimeSlot("Morning", "6 AM - 12 PM (6 hrs)"),
+    BangaloreTimeSlot("Afternoon", "12 PM - 6 PM (6 hrs)"),
+    BangaloreTimeSlot("Night", "6 PM - 12 AM (6 hrs)")
 )
 
 /* ---------- MAIN SCREEN ---------- */
@@ -32,6 +62,11 @@ fun BangaloreParkingDetailsScreen(
     onBackClick: () -> Unit,
     onBookNowClick: () -> Unit
 ) {
+
+    val days = remember { getBangaloreNext7DaysList() }
+    var selectedDay by remember { mutableStateOf(days.first()) }
+    var selectedSlot by remember { mutableStateOf(bangaloreTimeSlots.first()) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -101,6 +136,30 @@ fun BangaloreParkingDetailsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            /* ---------- SELECT DAY ---------- */
+            Text("Select Day", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(days.size) {
+                    val day = days[it]
+                    BangaloreDayCard(day, day == selectedDay) { selectedDay = day }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            /* ---------- SELECT TIME ---------- */
+            Text("Select Time Slot", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(bangaloreTimeSlots.size) {
+                    val slot = bangaloreTimeSlots[it]
+                    BangaloreTimeSlotCard(slot, slot == selectedSlot) { selectedSlot = slot }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             /* ---------- INFO ROW 1 ---------- */
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 BangaloreInfoCard(
@@ -134,21 +193,65 @@ fun BangaloreParkingDetailsScreen(
                     value = "CCTV 24/7"
                 )
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+/* ---------- DAY CARD ---------- */
 
-            Text("Amenities", fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(6.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BangaloreChip("Covered")
-                BangaloreChip("CCTV")
-                BangaloreChip("Restroom")
-            }
+@Composable
+fun BangaloreDayCard(day: BangaloreDayItem, selected: Boolean, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(72.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) Color(0xFF1976D2) else Color(0xFFE3F2FD)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = day.day,
+                fontWeight = FontWeight.Bold,
+                color = if (selected) Color.White else Color.Black
+            )
+            Text(
+                text = day.date,
+                fontSize = 12.sp,
+                color = if (selected) Color.White else Color.DarkGray
+            )
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+/* ---------- TIME SLOT CARD ---------- */
 
-            Text("Open Hours", fontWeight = FontWeight.Bold)
-            Text("24 / 7 Open", color = Color.Gray)
+@Composable
+fun BangaloreTimeSlotCard(slot: BangaloreTimeSlot, selected: Boolean, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(150.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) Color(0xFF2E7D32) else Color(0xFFE8F5E9)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(
+                text = slot.title,
+                fontWeight = FontWeight.Bold,
+                color = if (selected) Color.White else Color.Black
+            )
+            Text(
+                text = slot.time,
+                fontSize = 12.sp,
+                color = if (selected) Color.White else Color.DarkGray
+            )
         }
     }
 }
@@ -172,23 +275,6 @@ fun BangaloreInfoCard(
             Text(title, fontSize = 12.sp, color = Color.Gray)
             Text(value, fontWeight = FontWeight.Bold)
         }
-    }
-}
-
-/* ---------- CHIP ---------- */
-
-@Composable
-fun BangaloreChip(text: String) {
-    Surface(
-        shape = RoundedCornerShape(50),
-        color = Color(0xFFE3F2FD)
-    ) {
-        Text(
-            text = text,
-            fontSize = 12.sp,
-            color = Color(0xFF1976D2),
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-        )
     }
 }
 

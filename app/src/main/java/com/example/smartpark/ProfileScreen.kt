@@ -20,13 +20,15 @@ import androidx.compose.ui.unit.sp
 fun ProfileScreen(
     onHomeClick: () -> Unit,
     onEvClick: () -> Unit,
+    onBookingsClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     Scaffold(
         bottomBar = {
             ProfileBottomNavBar(
                 onHomeClick = onHomeClick,
-                onEvClick = onEvClick
+                onEvClick = onEvClick,
+                onBookingsClick = onBookingsClick
             )
         }
     ) { padding ->
@@ -182,7 +184,8 @@ fun ProfileMenuItem(
 @Composable
 fun ProfileBottomNavBar(
     onHomeClick: () -> Unit,
-    onEvClick: () -> Unit
+    onEvClick: () -> Unit,
+    onBookingsClick: () -> Unit
 ) {
     NavigationBar {
 
@@ -195,7 +198,7 @@ fun ProfileBottomNavBar(
 
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = onBookingsClick,
             icon = { Icon(Icons.Default.Event, null) },
             label = { Text("Bookings") }
         )
